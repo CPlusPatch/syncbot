@@ -16,17 +16,30 @@
       pkgs = import nixpkgs {
         inherit system;
       };
+
+      lib = nixpkgs.lib;
     in {
       packages = rec {
-        syncbot = pkgs.python3Packages.buildPythonPackage {
+        syncbot = pkgs.python3Packages.buildPythonApplication {
           pname = "syncbot";
           version = "0.1.0";
+          pyproject = true;
+
           src = ./.;
-          format = "pyproject";
-          propagatedBuildInputs = with pkgs.python3.pkgs; [
+
+          build-system = with pkgs.python3Packages; [
             hatchling
+          ];
+
+          dependencies = with pkgs.python3Packages; [
             requests
           ];
+
+          meta = {
+            description = "Syncbot";
+            homepage = "https://github.com/CPlusPatch/syncbot";
+            license = lib.licenses.gpl3Only;
+          };
         };
         default = syncbot;
       };
@@ -73,7 +86,7 @@
               description = "Syncbot service";
 
               serviceConfig = {
-                ExecStart = "${self.packages.${system}.default}/bin/syncbot";
+                ExecStart = "${self.packages.${system}.default.program}";
                 Type = "simple";
                 Restart = "always";
                 RestartSec = "5s";
