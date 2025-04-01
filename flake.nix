@@ -47,7 +47,6 @@
       apps = rec {
         syncbot = flake-utils.lib.mkApp {
           drv = self.packages.${system}.syncbot;
-          exePath = "/lib/python3.12/site-packages/syncbot/__init__.py";
         };
         default = syncbot;
       };
@@ -87,7 +86,10 @@
               description = "Syncbot service";
 
               serviceConfig = {
-                ExecStart = self.apps.${system}.default.program;
+                ExecStart = lib.strings.concatStringsSep " " [
+                  "${pkgs.python3}/bin/python"
+                  "${self.packages.${system}.default}/lib/python3.12/site-packages/syncbot/__init__.py"
+                ];
                 Type = "simple";
                 Restart = "always";
                 RestartSec = "5s";
