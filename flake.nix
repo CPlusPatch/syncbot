@@ -86,7 +86,7 @@
               description = "Syncbot service";
 
               serviceConfig = {
-                ExecStart = "${self.packages.${system}.default.program}";
+                ExecStart = "${self.apps.${system}.default.program}";
                 Type = "simple";
                 Restart = "always";
                 RestartSec = "5s";
