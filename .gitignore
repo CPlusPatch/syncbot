@@ -172,3 +172,8 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Config files
+config.json
+crosspost_state.json
+result

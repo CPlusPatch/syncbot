@@ -1,0 +1,20 @@
+[project]
+name = "syncbot"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Jesse Wierzbinski",email = "contact@cpluspatch.com"}
+]
+license = {text = "AGPL-3.0"}
+readme = "README.md"
+requires-python = ">=3.12,<4.0"
+dependencies = [
+    "requests (>=2.31.0)",
+]
+
+[project.entry-points.main]
+syncbot = "syncbot:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
