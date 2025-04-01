@@ -46,8 +46,6 @@
           ...
         }: let
           cfg = config.services.syncbot;
-          configFile = configFormat.generate "config.json" cfg.config;
-          configFormat = pkgs.formats.json {};
 
           inherit (lib.options) mkOption;
           inherit (lib.modules) mkIf;
@@ -63,17 +61,6 @@
               type = lib.types.str;
               default = "/var/lib/syncbot";
               description = "Path to the data directory for the bot";
-            };
-
-            config = mkOption {
-              type = with lib.types;
-                submodule {
-                  freeformType = configFormat.type;
-                  options = {
-                  };
-                };
-              description = "Contents of the config file for the syncbot service";
-              default = {};
             };
           };
 
@@ -105,8 +92,6 @@
                 StandardOutput = "journal";
                 StandardError = "journal";
                 SyslogIdentifier = "syncbot";
-
-                Environment = "CONFIG_FILE=${configFile}";
               };
             };
 
