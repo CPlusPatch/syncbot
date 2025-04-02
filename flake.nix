@@ -87,8 +87,7 @@
 
               serviceConfig = {
                 ExecStart = lib.strings.concatStringsSep " " [
-                  "${pkgs.python3}/bin/python"
-                  "${self.packages.${system}.default}/lib/python3.12/site-packages/syncbot/__init__.py"
+                  "${self.packages.${system}.default}/bin/syncbot"
                 ];
                 Type = "simple";
                 Restart = "always";
