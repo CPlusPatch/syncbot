@@ -359,7 +359,7 @@ def main():
                     # Create the post on Mastodon
                     text = note.get("text", "")
                     if not text and media_ids:
-                        text = "..."  # Mastodon requires some text if there are attachments
+                        text = ""
 
                     mastodon_client.create_status(text, media_ids)
                     print(f"Successfully crossposted note {note['id']}")
