@@ -151,7 +151,7 @@ class MastodonClient:
         return self._make_request("POST", endpoint, files=files, data=data)
 
     def create_status(
-        self, text: str, media_ids: List[str] = None, visibility: str = "public"
+        self, text: str, media_ids: List[str] = None, visibility: str = "public", spoiler_text: Optional[str] = None
     ) -> Dict[str, Any]:
         """Create a new status (post) on Mastodon."""
         endpoint = "statuses"
@@ -159,10 +159,14 @@ class MastodonClient:
         data = {
             "status": text,
             "visibility": visibility,
+            "content_type": "text/markdown",
         }
 
         if media_ids:
             data["media_ids"] = media_ids
+
+        if spoiler_text:
+            data["spoiler_text"] = spoiler_text
 
         return self._make_request("POST", endpoint, json=data)
 
@@ -187,6 +191,15 @@ def should_crosspost(note: Dict[str, Any]) -> bool:
 
     return True
 
+def misskey_to_mastodon_visibility(misskey_visibility: str) -> str:
+    """Convert Misskey visibility to Mastodon visibility."""
+    visibility_map = {
+        "public": "public",
+        "followers": "unlisted",
+        "private": "direct",
+        "home": "direct",
+    }
+    return visibility_map.get(misskey_visibility, "public")
 
 def process_misskey_files(
     misskey_client: MisskeyClient,
@@ -246,12 +259,14 @@ def crosspost(config: Config):
 
                 # Create the post on Mastodon
                 text = note.get("text", "")
-                if not text and media_ids:
-                    text = ""
 
-                visibility = note.get("visibility", "public")
+                visibility = misskey_to_mastodon_visibility(
+                    note.get("visibility", "public")
+                )
 
-                mastodon_client.create_status(text, media_ids, visibility)
+                spoiler_text = note.get("cw")
+
+                mastodon_client.create_status(text, media_ids, visibility, spoiler_text)
                 print(f"Successfully crossposted note {note['id']}")
 
                 # Wait between posts to avoid rate limits
@@ -360,12 +375,14 @@ def main():
 
                     # Create the post on Mastodon
                     text = note.get("text", "")
-                    if not text and media_ids:
-                        text = ""
 
-                    visibility = note.get("visibility", "public")
+                    visibility = misskey_to_mastodon_visibility(
+                        note.get("visibility", "public")
+                    )
 
-                    mastodon_client.create_status(text, media_ids, visibility)
+                    spoiler_text = note.get("cw")
+
+                    mastodon_client.create_status(text, media_ids, visibility, spoiler_text)
                     print(f"Successfully crossposted note {note['id']}")
 
                     # Wait between posts to avoid rate limits
