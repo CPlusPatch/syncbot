@@ -204,7 +204,7 @@ def process_misskey_files(
             )
 
             # Upload to Mastodon
-            description = file.get("comment") or file.get("name", "")
+            description = file.get("comment")
             media = mastodon_client.upload_media(
                 file_content, filename, mime_type, description
             )
