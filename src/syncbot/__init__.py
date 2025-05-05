@@ -249,7 +249,9 @@ def crosspost(config: Config):
                 if not text and media_ids:
                     text = ""
 
-                mastodon_client.create_status(text, media_ids)
+                visibility = note.get("visibility", "public")
+
+                mastodon_client.create_status(text, media_ids, visibility)
                 print(f"Successfully crossposted note {note['id']}")
 
                 # Wait between posts to avoid rate limits
@@ -361,7 +363,9 @@ def main():
                     if not text and media_ids:
                         text = ""
 
-                    mastodon_client.create_status(text, media_ids)
+                    visibility = note.get("visibility", "public")
+
+                    mastodon_client.create_status(text, media_ids, visibility)
                     print(f"Successfully crossposted note {note['id']}")
 
                     # Wait between posts to avoid rate limits
