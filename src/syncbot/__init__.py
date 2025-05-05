@@ -195,9 +195,9 @@ def misskey_to_mastodon_visibility(misskey_visibility: str) -> str:
     """Convert Misskey visibility to Mastodon visibility."""
     visibility_map = {
         "public": "public",
-        "followers": "unlisted",
-        "private": "direct",
-        "home": "direct",
+        "followers": "private",
+        "specified": "direct",
+        "home": "unlisted",
     }
     return visibility_map.get(misskey_visibility, "public")
 
